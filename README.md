@@ -17,7 +17,7 @@ Stops and removes the sway effect from the specified `Motor6D`.
 ### `SwayModule:Listen()`
 Starts / resumes swaying for all sway instances under the current `SwayModule`
 ### `SwayModule:Disconnect()`  
-Stops and disconnects all swaying happening. (`sway` instances aren't don't get released)
+Stops and disconnects all swaying. (`sway` instances don't get released)
 
 ## Example Usage
 ```lua
