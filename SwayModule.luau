@@ -8,17 +8,21 @@ export type SwayModule = {
 	__index: SwayModule,
 
 	Create: (self: SwayModule, motor: Motor6D, multiplier: vector, speed: number) -> (),
-		-- Creates a new "sway" instance
+	-- Creates a new "sway" instance
 	Release: (self: SwayModule, motor: Motor6D) -> (),
-		-- Releases the current motor and stops it from swaying
+	-- Releases the current motor and stops it from swaying
 	Listen: (self: SwayModule) -> (),
-		-- Starts swaying all sway instances
+	-- Starts swaying all sway instances
 	Disconnect: (self: SwayModule) -> (),
-		-- Stops swaying all sway instances
+	-- Stops swaying all sway instances
 }
 
 -- / non modular variables
 local random = Random.new()
+local sin = math.sin
+
+-- / customizable
+local orientationMultplier = 3
 
 -- / module
 local module: SwayModule = {} :: SwayModule
@@ -47,15 +51,16 @@ function module:Listen()
 		for motor, data in pairs(self._motors) do
 			data.time += dt
 			local time, speed = data.time, data.speed
+			local tSin, ySin = sin(time * data.speed), sin(time * data.speed / 2)
 
 			local offset = CFrame.new(
-				math.sin(time * data.speed * data.multiplier.x),
-				math.sin(time * data.speed / 2) * data.multiplier.y,
-				math.sin(time * data.speed * data.multiplier.z)
+				tSin * data.multiplier.x,
+				ySin * data.multiplier.y,
+				tSin * data.multiplier.z
 			) * CFrame.Angles(
-				math.rad(math.sin(time * data.speed ) * data.multiplier.x),
-				math.rad(math.sin(time * data.speed / 2) * data.multiplier.y),
-				math.rad(math.sin(time * data.speed ) * data.multiplier.z)
+				math.rad(tSin * data.multiplier.x * orientationMultplier),
+				math.rad(ySin * data.multiplier.y * orientationMultplier),
+				math.rad(tSin * data.multiplier.z * orientationMultplier)
 			)
 
 			motor.C0 = self._origins[motor] * offset
